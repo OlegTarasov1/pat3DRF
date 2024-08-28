@@ -8,7 +8,7 @@ class Course(models.Model):
     course_intro = models.CharField(max_length = 500, blank = True)
     course_slug = models.SlugField(unique = True)
     price = models.DecimalField(max_digits = 10, decimal_places = 2, default = 0.00)
-    subscribers = models.ForeignKey(get_user_model(), on_delete = models.DO_NOTHING, related_name = 'subscribed_courses', null = True, blank = True)
+    subscribers = models.ManyToManyField(get_user_model(), related_name = 'subscribed_courses', null = True, blank = True)
     comment = models.ForeignKey('Comments', on_delete = models.DO_NOTHING, related_name = 'course', null = True, blank = True)
 
     def save(self, *args, **kwargs):
