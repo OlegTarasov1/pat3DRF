@@ -5,11 +5,11 @@ from django.utils.text import slugify
 class Course(models.Model):
     creator = models.ForeignKey(get_user_model(), on_delete = models.CASCADE, related_name = 'courses_created')
     course_title = models.CharField(max_length = 100)
-    course_intro = models.CharField(max_length = 500)
+    course_intro = models.CharField(max_length = 500, blank = True)
     course_slug = models.SlugField(unique = True)
     price = models.DecimalField(max_digits = 10, decimal_places = 2, default = 0.00)
-    subscribers = models.ForeignKey(get_user_model(), on_delete = models.DO_NOTHING, related_name = 'subscribed_courses')
-    comment = models.ForeignKey('Comments', on_delete = models.DO_NOTHING, related_name = 'course')
+    subscribers = models.ForeignKey(get_user_model(), on_delete = models.DO_NOTHING, related_name = 'subscribed_courses', null = True, blank = True)
+    comment = models.ForeignKey('Comments', on_delete = models.DO_NOTHING, related_name = 'course', null = True, blank = True)
 
     def save(self, *args, **kwargs):
         if not self.course_slug:
@@ -20,10 +20,10 @@ class Course(models.Model):
 class Lessons(models.Model):
     courses = models.ForeignKey('Course', on_delete = models.CASCADE, related_name = 'lessons')
     lesson_title = models.CharField(max_length = 100)
-    lesson_intro = models.CharField(max_length = 500)
-    lesson_text = models.TextField()
-    files = models.FileField(upload_to = 'uploads/')
-    viewed_by = models.ForeignKey(get_user_model(), on_delete = models.SET_NULL, null = True, related_name = 'lessons')
+    lesson_intro = models.CharField(max_length = 500, blank = True)
+    lesson_text = models.TextField(blank = True)
+    files = models.FileField(upload_to = 'uploads/', blank = True)
+    viewed_by = models.ForeignKey(get_user_model(), on_delete = models.SET_NULL, null = True, related_name = 'lessons', blank = True)
 
 
 class Comments(models.Model):

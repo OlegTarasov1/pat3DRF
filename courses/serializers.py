@@ -5,6 +5,8 @@ from rest_framework import serializers
 class CourseSerializer(serializers.ModelSerializer):
     creator = serializers.HiddenField(default = serializers.CurrentUserDefault())
     amnt_of_lessons = serializers.SerializerMethodField()
+    course_slug = serializers.SlugField(required = False)
+    comment = serializers.CharField(read_only = True)
 
     def get_amnt_of_lessons(self, obj):
         return obj.lessons.count()
