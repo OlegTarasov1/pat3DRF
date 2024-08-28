@@ -1,15 +1,20 @@
 from django.db import models
 from django.contrib.auth import get_user_model
-
+from django.utils.text import slugify
 
 class Course(models.Model):
-    creator = models.OneToOneField(get_user_model(), on_delete = models.CASCADE, related_name = 'courses_created')
+    creator = models.ForeignKey(get_user_model(), on_delete = models.CASCADE, related_name = 'courses_created')
     course_title = models.CharField(max_length = 100)
-    cours_intro = models.CharField(max_length = 500)
+    course_intro = models.CharField(max_length = 500)
     course_slug = models.SlugField(unique = True)
     price = models.DecimalField(max_digits = 10, decimal_places = 2, default = 0.00)
     subscribers = models.ForeignKey(get_user_model(), on_delete = models.DO_NOTHING, related_name = 'subscribed_courses')
     comment = models.ForeignKey('Comments', on_delete = models.DO_NOTHING, related_name = 'course')
+
+    def save(self, *args, **kwargs):
+        if not self.course_slug:
+            self.course_slug = slugify(self.course_title)
+        super().save(*args, **kwargs)
 
 
 class Lessons(models.Model):
