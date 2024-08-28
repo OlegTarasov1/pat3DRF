@@ -7,6 +7,11 @@ class CourseSerializer(serializers.ModelSerializer):
     amnt_of_lessons = serializers.SerializerMethodField()
     course_slug = serializers.SlugField(required = False)
     comment = serializers.CharField(read_only = True)
+    creator_username = serializers.SerializerMethodField()
+
+    def get_creator_username(self, obj): 
+        return obj.creator.username
+
 
     def get_amnt_of_lessons(self, obj):
         return obj.lessons.count()
@@ -14,6 +19,6 @@ class CourseSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Course
-        fields = ('creator', 'course_title', 'course_intro', 'course_slug', 'price', 'comment', 'amnt_of_lessons')
+        fields = ('creator', 'creator_username', 'course_title', 'course_intro', 'course_slug', 'price', 'comment', 'amnt_of_lessons')
 
 
