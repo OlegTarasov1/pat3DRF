@@ -37,12 +37,13 @@ INSTALLED_APPS = [
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
-    'rest_framework',
-    'django_extensions',
-    'djoser',
+    'django.contrib.staticfiles',
+    'courses.apps.CoursesConfig',
     'rest_framework.authtoken',
     'user.apps.UserConfig',
-    'django.contrib.staticfiles',
+    'django_extensions',
+    'rest_framework',
+    'djoser',
 ]
 
 MIDDLEWARE = [
@@ -144,3 +145,6 @@ CACHES = {
         "LOCATION": os.path.join(BASE_DIR, 'cache_folder'),
     }
 }
+
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')
