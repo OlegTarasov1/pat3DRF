@@ -8,7 +8,7 @@ class Course(models.Model):
     course_intro = models.CharField(max_length = 500, blank = True)
     course_slug = models.SlugField(unique = True)
     price = models.DecimalField(max_digits = 10, decimal_places = 2, default = 0.00)
-    subscribers = models.ManyToManyField(get_user_model(), related_name = 'subscribed_courses', null = True, blank = True)
+    subscribers = models.ManyToManyField(get_user_model(), related_name = 'subscribed_courses')
     comment = models.ForeignKey('Comments', on_delete = models.DO_NOTHING, related_name = 'course', null = True, blank = True)
 
     def save(self, *args, **kwargs):
@@ -23,7 +23,7 @@ class Lessons(models.Model):
     lesson_intro = models.CharField(max_length = 500, blank = True)
     lesson_text = models.TextField(blank = True)
     files = models.FileField(upload_to = 'uploads/', blank = True)
-    viewed_by = models.ForeignKey(get_user_model(), on_delete = models.SET_NULL, null = True, related_name = 'lessons', blank = True)
+    viewed_by = models.ManyToManyField(get_user_model(), related_name = 'lessons', blank = True)
 
 
 class Comments(models.Model):
