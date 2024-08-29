@@ -14,8 +14,6 @@ class CoursesCRD(viewsets.ModelViewSet):
     serializer_class = CourseSerializer
     permission_classes = (CoursesCRDpermissions, )
 
-    #переписать retreive (чтобы возвращал все уроки связаные с курсом (коротко))
-
     def get_queryset(self):
         search = self.request.query_params.get('search')
         if search:
@@ -67,7 +65,8 @@ class LessonsCRUD(viewsets.ModelViewSet):
         return Response(serialized.data)
     
     def get_serializer(self, *args, **kwargs):
-        if self.request.method == 'GET' and not self.request.kwargs.get('pk'):
-            return LessonsSerializerShort(*args, **kwargs)
-        else: 
+        try:
+            if self.request.method == 'GET' and not self.request.kwargs.get('pk'):
+                return LessonsSerializerShort(*args, **kwargs)
+        except:
             return LessonsSerializer(*args, **kwargs)
