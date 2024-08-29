@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from rest_framework.response import Response
-from rest_framework import viewsets
+from rest_framework import viewsets, generics
 from rest_framework.views import APIView
 from rest_framework.permissions import IsAuthenticated
 from django.db.models import Q
@@ -70,3 +70,16 @@ class LessonsCRUD(viewsets.ModelViewSet):
                 return LessonsSerializerShort(*args, **kwargs)
         except:
             return LessonsSerializer(*args, **kwargs)
+        
+
+class LessonsByCourses(generics.ListAPIView):
+    
+    serializer_class = LessonsSerializerShort
+    # add permissions 
+
+    def get_queryset(self):
+        pk = self.kwargs.get('pk')
+        print(pk)
+        return Lessons.objects.filter(courses__id = pk)
+
+
