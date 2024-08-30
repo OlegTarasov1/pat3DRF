@@ -51,7 +51,7 @@ class Purchase(APIView):
 
 class LessonsCRUD(viewsets.ModelViewSet):
     queryset = Lessons.objects.all()
-    serializer_class = LessonsSerializer
+    # serializer_class = LessonsSerializer
     permission_classes = (LessonsPermission, )
 
     def retrieve(self, request, *args, **kwargs):
@@ -75,11 +75,10 @@ class LessonsCRUD(viewsets.ModelViewSet):
 class LessonsByCourses(generics.ListAPIView):
     
     serializer_class = LessonsSerializerShort
-    # add permissions 
+    permission_classes = (LessonsPermission, )
 
     def get_queryset(self):
         pk = self.kwargs.get('pk')
-        print(pk)
         return Lessons.objects.filter(courses__id = pk)
 
 
