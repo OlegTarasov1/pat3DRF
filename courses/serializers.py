@@ -1,4 +1,4 @@
-from .models import Course, Lessons
+from .models import Course, Lessons, Comments
 from rest_framework import serializers
 
 
@@ -19,7 +19,7 @@ class CourseSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Course
-        fields = ('creator', 'creator_username', 'course_title', 'course_intro', 'course_slug', 'price', 'comment', 'amnt_of_lessons')
+        fields = ('creator', 'creator_username', 'course_title', 'course_intro', 'course_slug', 'price', 'amnt_of_lessons')
 
 
 class LessonsSerializer(serializers.ModelSerializer):
@@ -35,10 +35,23 @@ class LessonsSerializer(serializers.ModelSerializer):
 
 class LessonsSerializerShort(serializers.ModelSerializer):
     amnt_of_views = serializers.SerializerMethodField(read_only = True)
+    amnt_of_comments = serializers.SerializerMethodField(read_only = True)
+
+    def get_amnt_of_comments(self, obj):
+        return obj.lesson_comment.count()
 
     def get_amnt_of_views(self, obj):
         return obj.viewed_by.count()
 
     class Meta:
         model = Lessons
-        fields = ('courses', 'lesson_title', 'lesson_intro', 'amnt_of_views')
+        fields = ('courses', 'lesson_title', 'lesson_intro', 'amnt_of_views', 'amnt_of_comments')
+
+
+class SerializeComment(serializers.ModelSerializer):
+    creator = serializers.HiddenField(default = serializers.CurrentUserDefault())
+
+    class Meta:
+        model = Comments
+        fields = ('__all__')
+

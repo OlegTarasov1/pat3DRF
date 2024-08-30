@@ -1,12 +1,12 @@
 from django.shortcuts import render
 from rest_framework.response import Response
-from rest_framework import viewsets, generics
+from rest_framework import viewsets, generics, mixins
 from rest_framework.views import APIView
 from rest_framework.permissions import IsAuthenticated
 from django.db.models import Q
 from .permissions import CoursesCRDpermissions, LessonsPermission
-from .serializers import CourseSerializer, LessonsSerializer, LessonsSerializerShort
-from .models import Course, Lessons
+from .serializers import CourseSerializer, LessonsSerializer, LessonsSerializerShort, SerializeComment
+from .models import Course, Lessons, Comments
 
 
 class CoursesCRD(viewsets.ModelViewSet):
@@ -82,3 +82,28 @@ class LessonsByCourses(generics.ListAPIView):
         return Lessons.objects.filter(courses__id = pk)
 
 
+class CommentView(APIView):
+    queryset = Comments.objects.all()
+    serializer_class = SerializeComment
+    permission_classes = (IsAuthenticated, )
+
+    def get(self, request, *args, **kwargs):
+        pk = self.kwargs.get('pk')
+        comments = Comments.objects.filter(lesson_id = pk)
+        out = []
+        for i in comments:
+            serialized = self.serializer_class(i)
+            out.append(serialized.data)
+        return Response(out)
+    
+
+class CommentsCUD(mixins.CreateModelMixin,
+                   mixins.UpdateModelMixin,
+                   mixins.DestroyModelMixin,
+                   viewsets.GenericViewSet):
+
+    queryset = Comments.objects.all()
+    serializer_class = SerializeComment
+    permission_classes = (IsAuthenticated, )
+
+    

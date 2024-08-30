@@ -9,7 +9,7 @@ class Course(models.Model):
     course_slug = models.SlugField(unique = True)
     price = models.DecimalField(max_digits = 10, decimal_places = 2, default = 0.00)
     subscribers = models.ManyToManyField(get_user_model(), related_name = 'subscribed_courses')
-    comment = models.ForeignKey('Comments', on_delete = models.DO_NOTHING, related_name = 'course', null = True, blank = True)
+    # comment = models.ForeignKey('Comments', on_delete = models.DO_NOTHING, related_name = 'course', null = True, blank = True)
 
     def save(self, *args, **kwargs):
         if not self.course_slug:
@@ -27,14 +27,16 @@ class Lessons(models.Model):
 
 
 class Comments(models.Model):
-    user = models.ForeignKey(get_user_model(), on_delete = models.DO_NOTHING, related_name = 'feedback')
+    creator = models.ForeignKey(get_user_model(), on_delete = models.DO_NOTHING, related_name = 'feedback')
+    lesson = models.ForeignKey('Lessons', on_delete = models.CASCADE, related_name = 'lesson_comment')
     comment = models.TextField()
 
 
 class Score(models.Model):
-    user = models.ForeignKey(get_user_model(), on_delete = models.DO_NOTHING, related_name = 'score')
+    creator = models.ForeignKey(get_user_model(), on_delete = models.DO_NOTHING, related_name = 'score')
     course = models.ForeignKey('Course', on_delete = models.CASCADE, related_name = 'score')
-    
+    comment = models.TextField()
+
     class Rating(models.IntegerChoices):
         ONE = 1,
         TWO = 2,
@@ -45,4 +47,4 @@ class Score(models.Model):
     score = models.IntegerField(choices = Rating.choices)
 
     class Meta:
-        unique_together = ['user', 'course']
+        unique_together = ['creator', 'course']
