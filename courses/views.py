@@ -4,9 +4,9 @@ from rest_framework import viewsets, generics, mixins
 from rest_framework.views import APIView
 from rest_framework.permissions import IsAuthenticated
 from django.db.models import Q
-from .permissions import CoursesCRDpermissions, LessonsPermission
-from .serializers import CourseSerializer, LessonsSerializer, LessonsSerializerShort, SerializeComment
-from .models import Course, Lessons, Comments, Score, ScoreSerializer
+from .permissions import CoursesCRDpermissions, LessonsPermission, ScorePermission, CommentsPermission
+from .serializers import CourseSerializer,  ScoreSerializer, LessonsSerializer, LessonsSerializerShort, SerializeComment
+from .models import Course, Lessons, Comments, Score
 
 
 class CoursesCRD(viewsets.ModelViewSet):
@@ -51,7 +51,6 @@ class Purchase(APIView):
 
 class LessonsCRUD(viewsets.ModelViewSet):
     queryset = Lessons.objects.all()
-    # serializer_class = LessonsSerializer
     permission_classes = (LessonsPermission, )
 
     def retrieve(self, request, *args, **kwargs):
@@ -104,9 +103,10 @@ class CommentsCUD(mixins.CreateModelMixin,
 
     queryset = Comments.objects.all()
     serializer_class = SerializeComment
-    permission_classes = (IsAuthenticated, )
+    permission_classes = (CommentsPermission, )
 
 
 class ScoreForCourses(viewsets.ModelViewSet):
     queryset = Score.objects.all()
     serializer_class = ScoreSerializer
+    permission_classes = (ScorePermission, )
