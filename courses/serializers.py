@@ -1,9 +1,9 @@
-from .models import Course, Lessons, Comments
+from .models import Course, Lessons, Comments, Score
 from rest_framework import serializers
 
 
 class CourseSerializer(serializers.ModelSerializer):
-    creator = serializers.HiddenField(default = serializers.CurrentUserDefault())
+    creator = serializers.CharField(read_only=True, default=serializers.CurrentUserDefault())
     amnt_of_lessons = serializers.SerializerMethodField(read_only = True)
     course_slug = serializers.SlugField(required = False)
     comment = serializers.CharField(read_only = True)
@@ -49,9 +49,18 @@ class LessonsSerializerShort(serializers.ModelSerializer):
 
 
 class SerializeComment(serializers.ModelSerializer):
-    creator = serializers.HiddenField(default = serializers.CurrentUserDefault())
+    creator = serializers.CharField(read_only=True, default=serializers.CurrentUserDefault())
 
     class Meta:
         model = Comments
         fields = ('__all__')
 
+
+class ScoreSerializer(serializers.ModelSerializer):
+    creator = serializers.CharField(read_only=True, default=serializers.CurrentUserDefault())
+
+    class Meta:
+        model = Score
+        fields = ('__all__')
+
+        

@@ -6,7 +6,7 @@ from rest_framework.permissions import IsAuthenticated
 from django.db.models import Q
 from .permissions import CoursesCRDpermissions, LessonsPermission
 from .serializers import CourseSerializer, LessonsSerializer, LessonsSerializerShort, SerializeComment
-from .models import Course, Lessons, Comments
+from .models import Course, Lessons, Comments, Score, ScoreSerializer
 
 
 class CoursesCRD(viewsets.ModelViewSet):
@@ -106,4 +106,7 @@ class CommentsCUD(mixins.CreateModelMixin,
     serializer_class = SerializeComment
     permission_classes = (IsAuthenticated, )
 
-    
+
+class ScoreForCourses(viewsets.ModelViewSet):
+    queryset = Score.objects.all()
+    serializer_class = ScoreSerializer
