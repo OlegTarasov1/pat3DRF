@@ -3,16 +3,22 @@ from rest_framework.response import Response
 from rest_framework import viewsets, generics, mixins
 from rest_framework.views import APIView
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.pagination import PageNumberPagination
 from django.db.models import Q
 from .permissions import CoursesCRDpermissions, LessonsPermission, ScorePermission, CommentsPermission
 from .serializers import CourseSerializer,  ScoreSerializer, LessonsSerializer, LessonsSerializerShort, SerializeComment
 from .models import Course, Lessons, Comments, Score
 
 
+class PaginationClass(PageNumberPagination):
+    page_size = 100
+
+
 class CoursesCRD(viewsets.ModelViewSet):
     queryset = Course.objects.all()
     serializer_class = CourseSerializer
     permission_classes = (CoursesCRDpermissions, )
+    pagination_class = PaginationClass
 
     def get_queryset(self):
         search = self.request.query_params.get('search')
@@ -75,6 +81,7 @@ class LessonsByCourses(generics.ListAPIView):
     
     serializer_class = LessonsSerializerShort
     permission_classes = (LessonsPermission, )
+    pagination_class = PaginationClass
 
     def get_queryset(self):
         pk = self.kwargs.get('pk')
@@ -85,6 +92,7 @@ class CommentView(APIView):
     queryset = Comments.objects.all()
     serializer_class = SerializeComment
     permission_classes = (IsAuthenticated, )
+    pagination_class = PaginationClass
 
     def get(self, request, *args, **kwargs):
         pk = self.kwargs.get('pk')
@@ -110,3 +118,4 @@ class ScoreForCourses(viewsets.ModelViewSet):
     queryset = Score.objects.all()
     serializer_class = ScoreSerializer
     permission_classes = (ScorePermission, )
+    pagination_class = PaginationClass
