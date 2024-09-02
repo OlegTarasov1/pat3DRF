@@ -6,16 +6,17 @@ class CourseSerializer(serializers.ModelSerializer):
     creator = serializers.CharField(read_only=True, default=serializers.CurrentUserDefault())
     amnt_of_lessons = serializers.SerializerMethodField(read_only = True)
     course_slug = serializers.SlugField(required = False)
-    comment = serializers.CharField(read_only = True)
     creator_username = serializers.SerializerMethodField()
+    # score = serializers.SerializerMethodField(read_only = True)
 
+    # def get_score(self, obj):
+    #     return obj.score.avg() if not None else 0
+ 
     def get_creator_username(self, obj): 
         return obj.creator.username
 
-
     def get_amnt_of_lessons(self, obj):
         return obj.lessons.count()
-
 
     class Meta:
         model = Course
